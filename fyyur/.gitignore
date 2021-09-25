@@ -1,0 +1,10 @@
+.idea/
+
+.DS_Store
+
+log
+
+.env
+.env.old
+
+!/config.py
