@@ -1,0 +1,56 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Fyyur | Shows Search{% endblock %}
+{% block content %}
+  <h3>Number of search results for "{{ search_term }}": {{ results.count }}</h3>
+
+  <!--  if there are venues that match the search term -->
+  {% if results.venue_data %}
+  <h3>Venues that match your search:</h3>
+  <ul class="unstyled">
+    {%for data in results.venue_data|sort(attribute='num_upcoming_shows')|reverse %}
+    <li class="col-sm-4">
+      <div class="tile tile-show">
+        <h4><a href="/venues/{{data.id}}">{{data.name}}</a></h4>
+        {% if data.image_link %}
+        <img src="{{ data.image_link }}" alt="Artist Image" />
+        {% endif %}
+        <h5>{{data.num_upcoming_shows}} upcoming show {% if data.num_upcoming_shows <= 1 %}time{% else %}times{% endif
+          %}: </h5>
+        <div class="items">
+          {%for show in data.upcoming_shows %}
+          <h4>{{ show.start_time.strftime('%b %d, %Y %-I:%M %p') }}</h4>
+          {% endfor %}
+        </div>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  <br/>
+
+  <!--  if there are artists that match the search term -->
+  {% if results.artist_data %}
+  <h3>Artists that match your search:</h3>
+  <ul class="unstyled">
+    {%for data in results.artist_data|sort(attribute='num_upcoming_shows')|reverse %}
+    <li class="col-sm-4">
+      <div class="tile tile-show">
+        <h5><a href="/artists/{{data.id}}">{{data.name}}</a></h5>
+        {% if data.image_link %}
+        <img src="{{ data.image_link }}" alt="Artist Image" />
+        {% endif %}
+        <h5>{{data.num_upcoming_shows}} upcoming show {% if data.num_upcoming_shows <= 1 %}time{% else %}times{% endif
+          %}: </h5>
+        <div class="items">
+          {%for show in data.upcoming_shows %}
+          <h4>{{ show.start_time.strftime('%b %d, %Y %-I:%M %p') }}</h4>
+          {% endfor %}
+        </div>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+{% endblock %}

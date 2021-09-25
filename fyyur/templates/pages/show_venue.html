@@ -1,0 +1,134 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Venue Search{% endblock %}
+{% block content %}
+<div class="row">
+	<div class="col-sm-6">
+		<h1 class="monospace">
+			{{ venue.name }}
+		</h1>
+		<p class="subtitle">
+			ID: {{ venue.id }}
+		</p>
+		<div class="genres">
+			{% for genre in venue.genres %}
+			<span class="genre">{{ genre }}</span>
+			{% endfor %}
+		</div>
+		<p>
+			<i class="fas fa-globe-americas"></i> {{ venue.city }}, {{ venue.state }}
+		</p>
+		<p>
+			<i class="fas fa-map-marker"></i> {% if venue.address %}{{ venue.address }}{% else %}No Address{% endif %}
+		</p>
+		<p>
+			<i class="fas fa-phone-alt"></i> {% if venue.phone %}{{ venue.phone }}{% else %}No Phone{% endif %}
+		</p>
+		<p>
+			<i class="fas fa-link"></i> {% if venue.website %}<a href="{{ venue.website }}" target="_blank">{{ venue.website }}</a>{% else %}No Website{% endif %}
+		</p>
+		<p>
+			<i class="fab fa-facebook-f"></i> {% if venue.facebook_link %}<a href="{{ venue.facebook_link }}" target="_blank">{{ venue.facebook_link }}</a>{% else %}No Facebook Link{% endif %}
+		</p>
+		{% if venue.seeking_talent %}
+		<div class="seeking">
+			<p class="lead">Currently seeking talent</p>
+			<div class="description">
+				<i class="fas fa-quote-left"></i> {{ venue.seeking_description }} <i class="fas fa-quote-right"></i>
+			</div>
+		</div>
+		{% else %}	
+		<p class="not-seeking">
+			<i class="fas fa-moon"></i> Not currently seeking talent
+		</p>
+		{% endif %}
+    <div class="buttons">
+<!--      <a href="/venues/{{ venue.id }}/edit"><button type="submit" value="Edit Venue"-->
+<!--                                                 class="btn btn-primary btn-warning">Edit Venue</button></a>-->
+<!--      <form method='POST' action="/venues/{{ venue.id }}/delete"><button type="submit" value="Delete Venue"-->
+<!--                                                 class="btn btn-primary btn-danger">Delete Venue</button></form>-->
+    </div>
+	</div>
+	<div class="col-sm-6">
+    {% if venue.image_link %}
+		<img src="{{ venue.image_link }}" alt="Venue Image" />
+    {% endif %}
+	</div>
+</div>
+<section>
+	<h2 class="monospace">{{ venue.upcoming_shows_count }} Upcoming {% if venue.upcoming_shows_count == 1 %}Show{% else %}Shows{% endif %}</h2>
+	<div class="row">
+		{%for show in venue.upcoming_shows %}
+		<div class="col-sm-4">
+			<div class="tile tile-show">
+        {% if show.artist.image_link %}
+				<img src="{{ show.artist.image_link }}" alt="Show Artist Image" />
+        {% endif %}
+				<h5><a href="/artists/{{ show.artist_id }}">{{ show.artist.name }}</a></h5>
+				<h6>{{ show.start_time.strftime('%b %d, %Y %-I:%M %p') }}</h6>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+</section>
+<section>
+	<h2 class="monospace">{{ venue.past_shows_count }} Past {% if venue.past_shows_count == 1 %}Show{% else %}Shows{% endif %}</h2>
+	<div class="row">
+		{%for show in venue.past_shows %}
+		<div class="col-sm-4">
+			<div class="tile tile-show">
+        {% if show.artist.image_link %}
+				<img src="{{ show.artist.image_link }}" alt="Show Artist Image" />
+        {% endif %}
+				<h5><a href="/artists/{{ show.artist_id }}">{{ show.artist.name }}</a></h5>
+				<h6>{{ show.start_time.strftime('%b %d, %Y %-I:%M %p') }}</h6>
+			</div>
+		</div>
+		{% endfor %}
+	</div>
+</section>
+
+<section>
+  <h2 class="monospace">Book Talent for This Venue</h2>
+  <h3 class="form-heading">Search for an artist to book: </h3>
+  <div class="form-wrapper">
+    <form class="artist_search">
+      <input class="form-control form"
+             type="search"
+             name="artist_search_term"
+             placeholder="Type part of an artist's name here"
+             aria-label="Search"><button>Search</button>
+    </form>
+    {% if results.artist_data %}
+    <h3>Results for "{{ results.artist_search_term }}": {{ results.count }}</h3>
+    <p>First, select the artist you wish to book. Next, enter the desired
+      start date-time of the show. Finally, click the "Book the Show" button.</p>
+    <form class="book_artist" action="/shows/create" method="post">
+      <label>Artist</label>
+      <ul class="items">
+        {% for data in results.artist_data %}
+        <li>
+          <input class="form" type="radio" name="artist_id" value="{{ data.id }}" required>
+          <a href="/artists/{{ data.id }}">
+            <div class="item">
+              <h5>{{ data.name }}</h5>
+            </div>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+      <label>Start Time</label>
+      <input class="form"
+             type="datetime-local"
+             name="start_time"
+             placeholder="YYYY-MM-DD HH:MM"
+             aria-label="Start time" required><br>
+      <input class="form" type="hidden" name="venue_id" value="{{ venue.id }}">
+      <br>
+      <input type="submit" value="Book the Show" class="btn btn-primary btn-lg btn-block">
+    </form>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}
+
