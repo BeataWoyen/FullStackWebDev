@@ -59,7 +59,7 @@ def venues():
             "venues": [{
                 "id": venue.id,
                 "name": venue.name,
-                "num_upcoming_shows": len([show for show in venue.show_id if show.start_time > datetime.now()])
+                "num_upcoming_shows": len([show for show in venue.show if show.start_time > datetime.now()])
             } for venue in venues if
                 venue.city == area.city and venue.state == area.state]
         })
@@ -436,22 +436,22 @@ def search_shows():
             "id": venue.id,
             "name": venue.name,
             "image_link": venue.image_link,
-            "num_upcoming_shows": len([show for show in venue.shows if show.start_time > datetime.now()]),
+            "num_upcoming_shows": len([show for show in venue.show if show.start_time > datetime.now()]),
             "upcoming_shows": [{
                 "start_time": show.start_time,
                 "artist_id": show.artist_id
-            } for show in venue.shows if show.start_time > datetime.now()]
+            } for show in venue.show if show.start_time > datetime.now()]
         })
     for artist in artist_results:
         artist_data.append({
             "id": artist.id,
             "name": artist.name,
             "image_link": artist.image_link,
-            "num_upcoming_shows": len([show for show in artist.shows if show.start_time > datetime.now()]),
+            "num_upcoming_shows": len([show for show in artist.show if show.start_time > datetime.now()]),
             "upcoming_shows": [{
                 "start_time": show.start_time,
                 "artist_id": show.artist_id
-            } for show in artist.shows if show.start_time > datetime.now()]
+            } for show in artist.show if show.start_time > datetime.now()]
         })
     data = venue_data + artist_data
     results = {

@@ -26,7 +26,6 @@ class Venue(db.Model):
     facebook_link = db.Column(db.String(120))
     seeking_talent = db.Column(db.Boolean(), default=False)
     seeking_description = db.Column(db.String(500))
-    # shows = db.relationship('Show', backref='venue', lazy=True)
 
     # debugging - will print the id and name of each venue
     def __repr__(self):
@@ -50,7 +49,6 @@ class Artist(db.Model):
     facebook_link = db.Column(db.String(120))
     seeking_venue = db.Column(db.Boolean(), default=False)
     seeking_description = db.Column(db.String(500))
-    # shows = db.relationship('Show', backref='artist', lazy=True)
 
     # debugging - will print the id and name of each artist
     def __repr__(self):
